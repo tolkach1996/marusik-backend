@@ -1,4 +1,83 @@
-const TelegramApi = require('node-telegram-bot-api')
+const mongoose = require('mongoose')
+const TelegramApi = require('node-telegram-bot-api');
+const Express = require('express')
+const Post = require("./models/post")
+require('dotenv').config()
+
+
+const PORT = 5000;
+
+mongoose.Promise = global.Promise;
+const options = {
+    socketTimeoutMS: 30000,
+    keepAlive: true,
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+}
+mongoose.set('debug', false);
+mongoose.connection
+    .on('error', error => console.log(error))
+    .on('close', () => console.log('Database connection closed.'))
+    .once('open', () => {
+        const info = mongoose.connections[0];
+        console.log(`Connected to ${info.host}:${info.port}/${info.name}`);
+    })
+mongoose.connect(process.env.MONGO_URL, options);
+
+
+
+const app = Express()
+app.use(Express.json())
+
+
+app.post('/', async (req, res) => {
+    try {
+        const { author, title, content, picture } = req.body
+        const post = await post.create({ author, title, content })
+        res.status(200).json('Сервер работает123')
+    } catch (e) {
+        res.status(e)
+    }
+})
+
+
+
+async function startApp() {
+    try {
+        app.listen(PORT, () => console.log('Server started on port ' + PORT))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/*app.get('/', (req, res) => {
+    const post = post.create({})
+    res.status(200).json('Сервер работает123')
+})*/
+
+startApp()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const purchasesData = [
@@ -24,7 +103,7 @@ const purchasesData = [
     }
 ]
 const token = "5945703906:AAErv1Li2l8Ecn17uj1bx0asyPE3oSE-mKg"
-const webAppUrl = 'https://d594-81-5-76-237.eu.ngrok.io/'
+const webAppUrl = 'https://ae93-81-5-76-237.eu.ngrok.io/'
 
 /*const button = {
     reply_markup: JSON.stringify({
